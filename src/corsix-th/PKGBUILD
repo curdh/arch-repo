@@ -1,0 +1,39 @@
+_pkgname=corsix-th
+pkgname=corsix-th-bin
+pkgver=0.70.1
+pkgrel=1
+pkgdesc='Reimplementation of the game engine of Theme Hospital (Appimage version)'
+arch=(x86_64)
+url=https://corsixth.com/
+license=(MIT)
+_appimage="CorsixTH-v${pkgver}-${arch}.AppImage"
+noextract=("${_appimage}")
+depends=(zlib fuse2)
+provides=('corsix-th')
+conflicts=(
+    'corsix-th'
+    'corsix-th-git'
+)
+options=(!strip !debug)
+source=("${_appimage}::https://github.com/CorsixTH/CorsixTH/releases/download/v${pkgver}/${_appimage}")
+sha256sums=('f228510a6a0e7450e836cd4aace5b2e278638c0ce91eaf00de81c27c06dab14d')
+appname="corsix-th"
+
+prepare() {
+    chmod +x "${_appimage}"
+    ./"${_appimage}" --appimage-extract
+}
+
+package() {
+    # AppImage
+    install -Dm755 "${srcdir}/${_appimage}" "${pkgdir}/opt/${_pkgname}/${_pkgname}.AppImage"
+    install -dm755 "${pkgdir}/usr/bin"
+    ln -s "/opt/${_pkgname}/${_pkgname}.AppImage" "${pkgdir}/usr/bin/${_pkgname}"
+
+    # Desktop file
+    install -Dm644 "${srcdir}/squashfs-root/com.corsixth.corsixth.desktop" "${pkgdir}/usr/share/applications/${_pkgname}.desktop"
+
+    # Icons
+    install -dm755 "${pkgdir}/usr/share/"
+    cp -r --no-preserve=mode,ownership "${srcdir}/squashfs-root/usr/share/icons" "${pkgdir}/usr/share/"
+}
