@@ -1,0 +1,45 @@
+_pkgname=openttd-jgrpp
+pkgname=openttd-jgrpp-bin
+pkgver=0.73.2
+pkgrel=1
+pkgdesc="Engine for running Transport Tycoon Deluxe with JGR's patch pack"
+arch=(x86_64)
+url=https://github.com/JGRennison/OpenTTD-patches
+license=('GPL-2.0-only')
+_release="openttd-jgrpp-${pkgver}-linux-generic-amd64"
+depends=(
+    'fluidsynth'
+    'fontconfig'
+    'hicolor-icon-theme'
+    'lzo'
+    'sdl2-compat'
+)
+optdepends=(
+    'openttd-jgrpp-opengfx: free graphics'
+    'openttd-jgrpp-opensfx: free sound set'
+    'openttd-jgrpp-openmsx: free music set'
+)
+provides=('openttd-jgrpp')
+conflicts=('openttd-jgrpp')
+source=("${_release}.tar.xz::https://github.com/JGRennison/OpenTTD-patches/releases/download/jgrpp-${pkgver}/${_release}.tar.xz")
+sha256sums=('18731d8157e258654dffd6e0cbd009975ddc530a8f6ef23879c2286d544f3d25')
+
+package() {
+    install -dm755 "${pkgdir}/usr/bin"
+    install -dm755 "${pkgdir}/usr/share"
+    install -dm755 "${pkgdir}/usr/share/docs"
+    install -dm755 "${pkgdir}/usr/share/${_pkgname}"
+
+    install -Dm755 "${srcdir}/${_release}/openttd" "${pkgdir}/usr/bin/openttd"
+    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/docs" "${pkgdir}/usr/share/docs/${_pkgname}/"
+    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/share/applications" "${pkgdir}/usr/share/"
+    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/share/icons" "${pkgdir}/usr/share/"
+    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/share/pixmaps" "${pkgdir}/usr/share/"
+
+    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/ai" "${pkgdir}/usr/share/${_pkgname}/ai"
+    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/baseset" "${pkgdir}/usr/share/${_pkgname}/baseset"
+    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/game" "${pkgdir}/usr/share/${_pkgname}/game"
+    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/lang" "${pkgdir}/usr/share/${_pkgname}/lang"
+    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/scripts" "${pkgdir}/usr/share/${_pkgname}/scripts"
+}
+
