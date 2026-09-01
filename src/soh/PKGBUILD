@@ -25,7 +25,6 @@ package() {
     # AppImage
     install -Dm755 "${srcdir}/${_appimage}" "${pkgdir}/opt/${_pkgname}/${_pkgname}.AppImage"
     install -dm755 "${pkgdir}/usr/bin"
-    ln -s "/opt/${_pkgname}/${_pkgname}.AppImage" "${pkgdir}/usr/bin/${_pkgname}"
 
     # Desktop file
     # Adjust .desktop so it will work outside of AppImage container
@@ -36,5 +35,15 @@ package() {
 
     # Icons
     cp -r --no-preserve=mode,ownership "${srcdir}/squashfs-root/usr/share/icons" "${pkgdir}/usr/share/"
+    
+    # Wrapper
+    cat <<EOF > "${pkgdir}/usr/bin/${_pkgname}"
+#!/bin/sh
+export SHIP_HOME="\${XDG_DATA_HOME:-\$HOME/.local/share}/${_pkgname}"
+mkdir -p "\$SHIP_HOME"
+exec /opt/${_pkgname}/${_pkgname}.AppImage "\$@"
+EOF
+
+    chmod 755 "${pkgdir}/usr/bin/${_pkgname}"
 }
 
