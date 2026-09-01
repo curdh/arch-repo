@@ -1,0 +1,38 @@
+pkgname=tape16
+pkgver=0.9.371
+pkgrel=1
+pkgdesc='Destructive tape-style DAW (Appimage)'
+arch=(x86_64)
+url="https://emrmusicgroup.com/tape16"
+license=('custom: proprietary')
+_appimage="TAPE16-linux-${arch}.AppImage"
+_release="TAPE-16-v${pkgver}-Linux-Release"
+depends=(fuse2 jack pipewire wireplumber xorg-xwayland zlib)
+provides=('tape16')
+source=("${_release}.zip::https://github.com/jackpaterson1/TAPE-16-Public-Releases/releases/download/${pkgver}/${_release}.zip")
+sha256sums=('7635518a25c4e6e71005b0381e8cfd9cc712e3dedcee0950311a7ad850a3c778')
+options=(!strip !debug)
+
+prepare() {
+    mv "${_release}/TAPE 16 AppImage/${_appimage}" "./"
+    chmod +x "${_appimage}"
+    ./"${_appimage}" --appimage-extract
+}
+
+package() {
+    # AppImage
+    install -Dm755 "${srcdir}/${_appimage}" "${pkgdir}/opt/${pkgname}/${pkgname}.AppImage"
+    install -dm755 "${pkgdir}/usr/bin"
+    ln -s "/opt/${pkgname}/${pkgname}.AppImage" "${pkgdir}/usr/bin/${pkgname}"
+
+    # Desktop file
+    # Adjust .desktop so it will work outside of AppImage container
+    sed -i -E "s|Exec=.*|Exec=/usr/bin/${pkgname} %U|" "${srcdir}/squashfs-root/usr/share/applications/tape16.desktop"
+    
+    install -dm755 "${pkgdir}/usr/share/applications"
+    install -Dm644 "${srcdir}/squashfs-root/usr/share/applications/tape16.desktop" "${pkgdir}/usr/share/applications/${pkgname}.desktop"
+
+    # Icons
+    cp -r --no-preserve=mode,ownership "${srcdir}/squashfs-root/usr/share/icons" "${pkgdir}/usr/share/"
+}
+
