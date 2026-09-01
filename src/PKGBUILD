@@ -1,0 +1,40 @@
+pkgname=soh-bin
+_pkgname="soh"
+pkgver=9.2.3
+pkgrel=1
+_codename="Ackbar-Delta"
+_release="SoH-${_codename}-Linux"
+pkgdesc='An unofficial port of The Legend of Zelda Ocarina of Time for PC, Wii U, and Switch (Appimage)'
+arch=(x86_64)
+url="https://shipofharkinian.com/"
+license=('unknown')
+depends=(fuse2 zlib)
+conflicts=('soh')
+provides=('soh')
+source=("soh-${pkgver}-linux.zip::https://github.com/HarbourMasters/Shipwright/releases/download/${pkgver}/${_release}.zip")
+sha256sums=('f81cde8052142d6abbbaaffa70699d6748e4cde3f158be8f268c3aab338ee315')
+options=(!strip !debug)
+_appimage="soh.appimage"
+
+prepare() {
+    chmod +x "${_appimage}"
+    ./"${_appimage}" --appimage-extract
+}
+
+package() {
+    # AppImage
+    install -Dm755 "${srcdir}/${_appimage}" "${pkgdir}/opt/${_pkgname}/${_pkgname}.AppImage"
+    install -dm755 "${pkgdir}/usr/bin"
+    ln -s "/opt/${_pkgname}/${_pkgname}.AppImage" "${pkgdir}/usr/bin/${_pkgname}"
+
+    # Desktop file
+    # Adjust .desktop so it will work outside of AppImage container
+    sed -i -E "s|Exec=.*|Exec=/usr/bin/${_pkgname} %U|" "${srcdir}/squashfs-root/usr/share/applications/soh.desktop"
+    
+    install -dm755 "${pkgdir}/usr/share/applications"
+    install -Dm644 "${srcdir}/squashfs-root/usr/share/applications/soh.desktop" "${pkgdir}/usr/share/applications/${_pkgname}.desktop"
+
+    # Icons
+    cp -r --no-preserve=mode,ownership "${srcdir}/squashfs-root/usr/share/icons" "${pkgdir}/usr/share/"
+}
+
