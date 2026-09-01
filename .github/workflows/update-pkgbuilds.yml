@@ -1,0 +1,64 @@
+name: Actualizar PKGBUILDs
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Se ejecuta diariamente a las 02:00 UTC
+  workflow_dispatch:     # Permite ejecución manual desde la web de GitHub
+
+jobs:
+  update-pkgbuilds:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Actualizar PKGBUILDs
+        uses: pacollaborative/archlinux-action@v1
+        with:
+          run: |
+            # 1. Instalar utilidades básicas de Arch
+            pacman -Sy --noconfirm pacman-contrib git jq curl
+
+            # 2. Recorrer las subcarpetas dentro de /src/
+            for PKG_DIR in ./src/*/; do
+              if [ -f "${PKG_DIR}PKGBUILD" ]; then
+                PKG_NAME=$(basename "$PKG_DIR")
+                echo "Procesando $PKG_NAME..."
+
+                # Obtener repositorio de GitHub desde el PKGBUILD
+                GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//')
+                [ -z "$GH_REPO" ] && continue
+
+                # Consultar la última versión (Tag) en GitHub
+                LATEST_TAG=$(curl -s "https://api.github.com/repos/$GH_REPO/releases/latest" | jq -r .tag_name)
+                [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && LATEST_TAG=$(curl -s "https://api.github.com/repos/$GH_REPO/tags" | jq -r '.[0].name')
+
+                CLEAN_VER=$(echo "$LATEST_TAG" | sed -E 's/^(v|release-|\r)//g')
+                CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
+
+                if [ -n "$CLEAN_VER" ] && [ "$CLEAN_VER" != "null" ] && [ "$CLEAN_VER" != "$CURRENT_VER" ]; then
+                  echo "Actualizando $PKG_NAME: $CURRENT_VER -> $CLEAN_VER"
+
+                  # Cambiar la versión
+                  sed -i "s/^pkgver=.*/pkgver=$CLEAN_VER/" "${PKG_DIR}PKGBUILD"
+                  sed -i "s/^pkgrel=.*/pkgrel=1/" "${PKG_DIR}PKGBUILD"
+
+                  # Herramienta oficial de Arch: descarga el asset y actualiza los hashes automáticamente
+                  (cd "$PKG_DIR" && updpkgsums)
+                  (namcap -i "${PKG_DIR}PKGBUILD")
+                fi
+              fi
+            done
+
+      - name: Guardar cambios
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          if [ -n "$(git status --porcelain)" ]; then
+            git add src/
+            git commit -m "chore: actualizar PKGBUILDs a la última versión"
+            git push
+          else
+            echo "No hay actualizaciones."
+          fi
