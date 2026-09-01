@@ -29,21 +29,36 @@ jobs:
                 GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//')
                 [ -z "$GH_REPO" ] && continue
 
-                # Consultar la última versión (Tag) en GitHub
-                LATEST_TAG=$(curl -s "https://api.github.com/repos/$GH_REPO/releases/latest" | jq -r .tag_name)
-                [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && LATEST_TAG=$(curl -s "https://api.github.com/repos/$GH_REPO/tags" | jq -r '.[0].name')
+                # Consultar la última release en la API
+                RELEASE_JSON=$(curl -s "https://api.github.com/repos/$GH_REPO/releases/latest")
+
+                LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
+                [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && continue
 
                 CLEAN_VER=$(echo "$LATEST_TAG" | sed -E 's/^(v|release-|\r)//g')
                 CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
 
-                if [ -n "$CLEAN_VER" ] && [ "$CLEAN_VER" != "null" ] && [ "$CLEAN_VER" != "$CURRENT_VER" ]; then
+                if [ -n "$CLEAN_VER" ] && [ "$CLEAN_VER" != "$CURRENT_VER" ]; then
                   echo "Actualizando $PKG_NAME: $CURRENT_VER -> $CLEAN_VER"
 
-                  # Cambiar la versión
+                  # Actualizar pkgver
                   sed -i "s/^pkgver=.*/pkgver=$CLEAN_VER/" "${PKG_DIR}PKGBUILD"
                   sed -i "s/^pkgrel=.*/pkgrel=1/" "${PKG_DIR}PKGBUILD"
 
-                  # Herramienta oficial de Arch: descarga el asset y actualiza los hashes automáticamente
+                  # Si el PKGBUILD requiere _codename, lo extraemos directamente del nombre de la release
+                  if grep -q "^_codename=" "${PKG_DIR}PKGBUILD"; then
+                    RELEASE_TITLE=$(echo "$RELEASE_JSON" | jq -r .name)
+                    
+                    # Convierte "9.2.3 (Ackbar Delta)" -> "Ackbar-Delta"
+                    NEW_CODENAME=$(echo "$RELEASE_TITLE" | sed -E 's/^[0-9.]+//; s/[()"]//g; s/^\s+|\s+$//g; s/ +/-/g')
+
+                    if [ -n "$NEW_CODENAME" ] && [ "$NEW_CODENAME" != "null" ]; then
+                      echo "Nuevo codename asignado: $NEW_CODENAME"
+                      sed -i "s/^_codename=.*/_codename=\"$NEW_CODENAME\"/" "${PKG_DIR}PKGBUILD"
+                    fi
+                  fi
+
+                  # Descargar asset con las nuevas variables y recalcular hashes
                   (cd "$PKG_DIR" && updpkgsums)
                   (namcap -i "${PKG_DIR}PKGBUILD")
                 fi
