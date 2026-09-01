@@ -8,65 +8,69 @@ on:
 jobs:
   update-pkgbuilds:
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+
     steps:
+      - name: Actualizar e instalar dependencias básicas en Arch Linux
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm base-devel git pacman-contrib jq curl namcap
+
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
       - name: Actualizar PKGBUILDs
-        uses: pacollaborative/archlinux-action@v1
-        with:
-          run: |
-            # 1. Instalar utilidades básicas de Arch
-            pacman -Sy --noconfirm pacman-contrib git jq curl
+        run: |
+          # Recorrer las subcarpetas dentro de /src/
+          for PKG_DIR in ./src/*/; do
+            if [ -f "${PKG_DIR}PKGBUILD" ]; then
+              PKG_NAME=$(basename "$PKG_DIR")
+              echo "Procesando $PKG_NAME..."
 
-            # 2. Recorrer las subcarpetas dentro de /src/
-            for PKG_DIR in ./src/*/; do
-              if [ -f "${PKG_DIR}PKGBUILD" ]; then
-                PKG_NAME=$(basename "$PKG_DIR")
-                echo "Procesando $PKG_NAME..."
+              # Obtener repositorio de GitHub desde el PKGBUILD
+              GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//')
+              [ -z "$GH_REPO" ] && continue
 
-                # Obtener repositorio de GitHub desde el PKGBUILD
-                GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//')
-                [ -z "$GH_REPO" ] && continue
+              # Consultar la última release en la API
+              RELEASE_JSON=$(curl -s "https://api.github.com/repos/$GH_REPO/releases/latest")
 
-                # Consultar la última release en la API
-                RELEASE_JSON=$(curl -s "https://api.github.com/repos/$GH_REPO/releases/latest")
+              LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
+              [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && continue
 
-                LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
-                [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && continue
+              CLEAN_VER=$(echo "$LATEST_TAG" | sed -E 's/^(v|release-|\r)//g')
+              CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
 
-                CLEAN_VER=$(echo "$LATEST_TAG" | sed -E 's/^(v|release-|\r)//g')
-                CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
+              if [ -n "$CLEAN_VER" ] && [ "$CLEAN_VER" != "$CURRENT_VER" ]; then
+                echo "Actualizando $PKG_NAME: $CURRENT_VER -> $CLEAN_VER"
 
-                if [ -n "$CLEAN_VER" ] && [ "$CLEAN_VER" != "$CURRENT_VER" ]; then
-                  echo "Actualizando $PKG_NAME: $CURRENT_VER -> $CLEAN_VER"
+                # Actualizar pkgver
+                sed -i "s/^pkgver=.*/pkgver=$CLEAN_VER/" "${PKG_DIR}PKGBUILD"
+                sed -i "s/^pkgrel=.*/pkgrel=1/" "${PKG_DIR}PKGBUILD"
 
-                  # Actualizar pkgver
-                  sed -i "s/^pkgver=.*/pkgver=$CLEAN_VER/" "${PKG_DIR}PKGBUILD"
-                  sed -i "s/^pkgrel=.*/pkgrel=1/" "${PKG_DIR}PKGBUILD"
+                # Si el PKGBUILD requiere _codename, lo extraemos directamente del nombre de la release
+                if grep -q "^_codename=" "${PKG_DIR}PKGBUILD"; then
+                  RELEASE_TITLE=$(echo "$RELEASE_JSON" | jq -r .name)
 
-                  # Si el PKGBUILD requiere _codename, lo extraemos directamente del nombre de la release
-                  if grep -q "^_codename=" "${PKG_DIR}PKGBUILD"; then
-                    RELEASE_TITLE=$(echo "$RELEASE_JSON" | jq -r .name)
-                    
-                    # Convierte "9.2.3 (Ackbar Delta)" -> "Ackbar-Delta"
-                    NEW_CODENAME=$(echo "$RELEASE_TITLE" | sed -E 's/^[0-9.]+//; s/[()"]//g; s/^\s+|\s+$//g; s/ +/-/g')
+                  # Convierte "9.2.3 (Ackbar Delta)" -> "Ackbar-Delta"
+                  NEW_CODENAME=$(echo "$RELEASE_TITLE" | sed -E 's/^[0-9.]+//; s/[()"]//g; s/^\s+|\s+$//g; s/ +/-/g')
 
-                    if [ -n "$NEW_CODENAME" ] && [ "$NEW_CODENAME" != "null" ]; then
-                      echo "Nuevo codename asignado: $NEW_CODENAME"
-                      sed -i "s/^_codename=.*/_codename=\"$NEW_CODENAME\"/" "${PKG_DIR}PKGBUILD"
-                    fi
+                  if [ -n "$NEW_CODENAME" ] && [ "$NEW_CODENAME" != "null" ]; then
+                    echo "Nuevo codename asignado: $NEW_CODENAME"
+                    sed -i "s/^_codename=.*/_codename=\"$NEW_CODENAME\"/" "${PKG_DIR}PKGBUILD"
                   fi
-
-                  # Descargar asset con las nuevas variables y recalcular hashes
-                  (cd "$PKG_DIR" && updpkgsums)
-                  (namcap -i "${PKG_DIR}PKGBUILD")
                 fi
+
+                # Descargar asset con las nuevas variables y recalcular hashes
+                (cd "$PKG_DIR" && updpkgsums)
+                (namcap -i "${PKG_DIR}PKGBUILD")
               fi
-            done
+            fi
+          done
 
       - name: Guardar cambios
         run: |
+          git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
