@@ -38,7 +38,7 @@ jobs:
               LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
               [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && continue
 
-              CLEAN_VER=$(echo "$LATEST_TAG" | sed -E 's/^(v|release-|\r)//g')
+              CLEAN_VER=$(echo "$LATEST_TAG" | grep -oP '\d+(\.\d+)+' | head -n 1)
               CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
 
               if [ -n "$CLEAN_VER" ] && [ "$CLEAN_VER" != "$CURRENT_VER" ]; then
