@@ -17,6 +17,11 @@ jobs:
           pacman -Syu --noconfirm
           pacman -S --noconfirm base-devel git pacman-contrib jq curl namcap
 
+          # 1. Crear el usuario 'builder' sin contraseña si no existe
+          id -u builder &>/dev/null || useradd -m builder
+          # Dar permisos al usuario builder sobre la carpeta del proyecto
+          chown -R builder:builder .
+
       - name: Checkout del repositorio
         uses: actions/checkout@v4.2.2
 
@@ -61,8 +66,11 @@ jobs:
                   fi
                 fi
 
-                # Descargar asset con las nuevas variables y recalcular hashes
-                (cd "$PKG_DIR" && updpkgsums)
+                # Asignar permisos al usuario builder para este directorio
+                chown -R builder:builder "$PKG_DIR"
+
+                # 2. EJECUTAR updpkgsums COMO USUARIO 'builder' (NO ROOT)
+                su builder -c "cd '$PKG_DIR' && updpkgsums"
                 (namcap -i "${PKG_DIR}PKGBUILD")
               fi
             fi
