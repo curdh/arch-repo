@@ -39,7 +39,7 @@ jobs:
           # Directorio temporal para recolectar todos los .pkg.tar.zst generados
           if [ -n "$SELECTED_PKGS" ];
           then
-            REPO_DIR="$(pwds)/build_output"
+            REPO_DIR="${GITHUB_WORKSPACE}/build_output"
             mkdir -p "$REPO_DIR"
           fi
                 
