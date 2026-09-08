@@ -1,5 +1,5 @@
 pkgname=lgogdownloader
-pkgver=0.16
+pkgver=3.18
 pkgrel=1
 pkgdesc="Open source downloader for GOG.com games, uses the GOG.com API"
 url="https://github.com/Sude-/lgogdownloader"
