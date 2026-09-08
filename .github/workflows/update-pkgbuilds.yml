@@ -50,7 +50,7 @@ jobs:
               echo "Procesando $PKG_NAME..."
               
               # Obtener repositorio de GitHub desde el PKGBUILD
-              GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//')
+              GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//' | tr -d '"'\''')
               echo "REPO: $GH_REPO"
               [ -z "$GH_REPO" ] && continue
               
