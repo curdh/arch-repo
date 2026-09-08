@@ -51,9 +51,11 @@ jobs:
               
               # Obtener repositorio de GitHub desde el PKGBUILD
               GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//')
+              echo "REPO: $GH_REPO"
               [ -z "$GH_REPO" ] && continue
               
               # Consultar la última release en la API
+              echo "URL: https://api.github.com/repos/$GH_REPO/releases/latest"
               RELEASE_JSON=$(curl -s "https://api.github.com/repos/$GH_REPO/releases/latest")
               LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
               echo "LATEST: $LATEST_TAG"
