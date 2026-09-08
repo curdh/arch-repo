@@ -30,6 +30,9 @@ jobs:
           
           # Dar permisos al usuario builder sobre la carpeta del proyecto
           chown -R builder:builder .
+
+          # Desactivar la generación de paquetes de depuración (-debug) globalmente
+          sed -i 's/BUILDENV=(.*)/BUILDENV=(!distcc !color !ccache check !sign !debug)/' /etc/makepkg.conf
           
       - name: Checkout del repositorio
         uses: actions/checkout@v4.2.2
