@@ -56,9 +56,12 @@ jobs:
               # Consultar la última release en la API
               RELEASE_JSON=$(curl -s "https://api.github.com/repos/$GH_REPO/releases/latest")
               LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
+              echo "LATEST: $LATEST_TAG"
               [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && continue
               CLEAN_VER=$(echo "$LATEST_TAG" | grep -oP '\d+(\.\d+)+' | head -n 1)
+              echo "CLEAN: $CLEAN_VER"
               CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
+              echo "CURRENT: $CURRENT_VER"
 
               # Si hay una actualización disponible
               if [ -n "$CLEAN_VER" ] && [ "$CLEAN_VER" != "$CURRENT_VER" ]; then
