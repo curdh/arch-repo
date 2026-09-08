@@ -94,17 +94,18 @@ jobs:
                   then
                     continue
                   fi
+                fi
 
-                  # Construir paquete.
-                  echo "- Construyendo paquete $PKG_NAME..."
-                  if su builder -c "cd '$PKG_DIR' && makepkg -sc --noconfirm"; 
-                  then
-                    echo "$PKG_NAME compilado con éxito."
-                    # Mover el binario generado a la carpeta de salida
-                    mv "$PKG_DIR"/*.pkg.tar.zst "$REPO_DIR"/ 2>/dev/null || true
-                  else
-                    echo "Error al compilar $PKG_NAME."
-                  fi
+                # Construir paquete.
+                echo "- Construyendo paquete $PKG_NAME..."
+                if su builder -c "cd '$PKG_DIR' && makepkg -sc --noconfirm"; 
+                then
+                  echo "$PKG_NAME compilado con éxito."
+                  # Mover el binario generado a la carpeta de salida
+                  mv "$PKG_DIR"/*.pkg.tar.zst "$REPO_DIR"/ 2>/dev/null || true
+                else
+                  echo "Error al compilar $PKG_NAME."
+                fi
               fi
             fi
           done
