@@ -1,1 +1,8 @@
+build_output/
 
+*.pkg.tar.zst
+*.db.tar.gz
+*.files.tar.gz
+*.zip
+*.tar.gz
+*.tar.xz
