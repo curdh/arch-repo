@@ -43,11 +43,12 @@ jobs:
           SELECTED_PKGS="${{ github.event.inputs.packages_to_build }}"
           [ -z "$SELECTED_PKGS" ] && SELECTED_PKGS="$PKGS_TO_BUILD"
 
-          # Directorio temporal para recolectar todos los .pkg.tar.zst generados
+          # Directorio temporal para recolectar todos los .pkg.tar.zst generados y carpeta temporal para compilar
           if [ -n "$SELECTED_PKGS" ];
           then
             REPO_DIR="${GITHUB_WORKSPACE}/build_output"
             mkdir -p "$REPO_DIR"
+            BUILD_TEMP="/tmp"
           fi
                 
           # Recorrer las subcarpetas dentro de /src/
@@ -103,16 +104,39 @@ jobs:
                   fi
                 fi
 
+                # Crear una carpeta temporal aislada fuera del repositorio de Git
+                rm -rf "$BUILD_TEMP"
+                mkdir -p "$BUILD_TEMP"
+
+                # Copiar todos los archivos de la receta (PKGBUILD, parches, .install, etc.)
+                cp -r "${PKG_DIR}/"* "$BUILD_TEMP"/
+
+                # Inyectar '-bin', 'provides' y 'conflicts' SOLO en el PKGBUILD temporal
+                sed -i -E 's/^pkgname=(["'\''"]?)([^"'\''\n]+)\1/pkgname=\1\2-bin\1/' "${BUILD_TEMP}/PKGBUILD"
+
+                if ! grep -q "^provides=" "${BUILD_TEMP}/PKGBUILD"; then
+                  echo "provides=('$PKG_NAME')" >> "${BUILD_TEMP}/PKGBUILD"
+                fi
+                if ! grep -q "^conflicts=" "${BUILD_TEMP}/PKGBUILD"; then
+                  echo "conflicts=('$PKG_NAME')" >> "${BUILD_TEMP}/PKGBUILD"
+                fi
+
+                # Asignar propiedad al usuario builder en la carpeta temporal
+                chown -R builder:builder "$BUILD_TEMP"
+
                 # Construir paquete.
                 echo "- Construyendo paquete $PKG_NAME..."
-                if su builder -c "cd '$PKG_DIR' && makepkg -sc --noconfirm"; 
+                if su builder -c "cd '$BUILD_TEMP' && makepkg -sc --noconfirm"; 
                 then
                   echo "$PKG_NAME compilado con éxito."
                   # Mover el binario generado a la carpeta de salida
-                  mv "$PKG_DIR"/*.pkg.tar.zst "$REPO_DIR"/ 2>/dev/null || true
+                  mv "$BUILD_TEMP"/*.pkg.tar.zst "$REPO_DIR"/ 2>/dev/null || true
                 else
                   echo "Error al compilar $PKG_NAME."
                 fi
+
+                # Limpieza de archivos temporales de compilación
+                rm -rf "$BUILD_TEMP"
               fi
             fi
           done
