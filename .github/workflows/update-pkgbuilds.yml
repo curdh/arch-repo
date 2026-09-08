@@ -21,8 +21,12 @@ jobs:
           pacman -Syu --noconfirm
           pacman -S --noconfirm base-devel git pacman-contrib jq curl namcap
           
-          # 1. Crear el usuario 'builder' sin contraseña si no existe
-          id -u builder &>/dev/null || useradd -m builder
+          # Crear el usuario 'builder' sin contraseña si no existe y dar permisos sudo sin contraseña
+          if ! id -u builder &>/dev/null; then
+            useradd -m builder
+            # Otorga permisos de sudo sin contraseña al usuario builder
+            echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+          fi
           
           # Dar permisos al usuario builder sobre la carpeta del proyecto
           chown -R builder:builder .
@@ -51,19 +55,14 @@ jobs:
               
               # Obtener repositorio de GitHub desde el PKGBUILD
               GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//' | tr -d '"'\''')
-              echo "REPO: $GH_REPO"
               [ -z "$GH_REPO" ] && continue
               
               # Consultar la última release en la API
-              echo "URL: https://api.github.com/repos/$GH_REPO/releases/latest"
               RELEASE_JSON=$(curl -s "https://api.github.com/repos/$GH_REPO/releases/latest")
               LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
-              echo "LATEST: $LATEST_TAG"
               [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && continue
               CLEAN_VER=$(echo "$LATEST_TAG" | grep -oP '\d+(\.\d+)+' | head -n 1)
-              echo "CLEAN: $CLEAN_VER"
               CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
-              echo "CURRENT: $CURRENT_VER"
 
               # Si hay una actualización disponible
               if [ -n "$CLEAN_VER" ] && [ "$CLEAN_VER" != "$CURRENT_VER" ]; then
