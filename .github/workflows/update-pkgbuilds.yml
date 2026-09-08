@@ -33,6 +33,7 @@ jobs:
 
           # Desactivar la generación de paquetes de depuración (-debug) globalmente
           sed -i 's/BUILDENV=(.*)/BUILDENV=(!distcc !color !ccache check !sign !debug)/' /etc/makepkg.conf
+          sed -i -E 's/(OPTIONS=\(.*\b)debug(\b.*\)|\b!debug\b)/\1!debug\2/' /etc/makepkg.conf
           
       - name: Checkout del repositorio
         uses: actions/checkout@v4.2.2
@@ -126,7 +127,7 @@ jobs:
 
                 # Construir paquete.
                 echo "- Construyendo paquete $PKG_NAME..."
-                if su builder -c "cd '$BUILD_TEMP' && makepkg -sc --noconfirm"; 
+                if su builder -c "cd '$BUILD_TEMP' && makepkg -sc --noconfirm --options '!debug'"; 
                 then
                   echo "$PKG_NAME compilado con éxito."
                   # Mover el binario generado a la carpeta de salida
