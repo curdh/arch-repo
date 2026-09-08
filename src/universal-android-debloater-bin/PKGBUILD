@@ -1,0 +1,33 @@
+pkgname=universal-android-debloater-bin
+pkgver=1.2.0
+pkgrel=1
+pkgdesc="Cross-platform GUI written in Rust using ADB to debloat non-rooted Android devices."
+arch=('x86_64')
+url="https://github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation"
+license=('GPL-3.0-or-later')
+depends=(
+  'android-tools'
+  'libgcc'
+)
+provides=("${pkgname%}")
+conflicts=("${pkgname%}")
+source=("uad-ng-$pkgver-noselfupdate-linux.tar.gz::$url/releases/download/v$pkgver/uad-ng-noselfupdate-linux.tar.gz"
+        "uad-ng-$pkgver-noselfupdate-linux-checksum::$url/releases/download/v$pkgver/uad-ng-noselfupdate-linux-checksum"
+        "uad-ng-$pkgver.png::https://raw.githubusercontent.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation/main/resources/assets/logo-dark.png"
+        "uad-ng.desktop")
+sha256sums=('980273195eb39ae43c776159252d67be0a5eea31faf88b600c2f9218cb099314'
+            '7793a2dab004dfd792ba47616413cd77b975d889ecf71a411e6bdf017f8476b7'
+            '019c4df893dca5b54557c381881d7946b7a53ebf5b610cc04d61c2980c1a22ec'
+            '40cdaf0417bb7abc1cc001849ca7f2dbe33f314f3bfd71645af00d1d903105e0')
+
+prepare() {
+        sha256sum -c "uad-ng-$pkgver-noselfupdate-linux-checksum"
+}
+
+package() {
+        install -dm755 "${pkgdir}/usr/share/applications"
+	install -Dm755 "$srcdir/uad-ng-noselfupdate-linux" "$pkgdir/usr/bin/uad-ng"
+	install -Dm644 "$srcdir/uad-ng-$pkgver.png" "${pkgdir}/usr/share/pixmaps/uad-ng.png"
+
+	install -Dm755 "uad-ng.desktop" "$pkgdir/usr/share/applications/"
+}
