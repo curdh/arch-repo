@@ -48,7 +48,7 @@ jobs:
           then
             REPO_DIR="${GITHUB_WORKSPACE}/build_output"
             mkdir -p "$REPO_DIR"
-            BUILD_TEMP="/tmp"
+            BUILD_TEMP="/tmp/${PKG_NAME}"
           fi
                 
           # Recorrer las subcarpetas dentro de /src/
