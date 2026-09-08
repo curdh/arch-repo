@@ -148,6 +148,10 @@ jobs:
             if ls *.pkg.tar.zst 1> /dev/null 2>&1; 
             then
               echo "Generando base de datos del repositorio..."
+              # Garantizar que /tmp exista y tenga permisos de lectura/escritura/ejecución
+              mkdir -p /tmp
+              chmod 1777 /tmp
+              
               repo-add -n -R curdh.db.tar.gz *.pkg.tar.zst
             else
               echo "No se generaron archivos .pkg.tar.zst para empaquetar."
