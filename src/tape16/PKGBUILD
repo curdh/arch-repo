@@ -1,5 +1,5 @@
 pkgname=tape16
-pkgver=0.9.380
+pkgver=0.9.390
 pkgrel=1
 pkgdesc='Destructive tape-style DAW (Appimage)'
 arch=(x86_64)
