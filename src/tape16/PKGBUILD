@@ -1,5 +1,5 @@
 pkgname=tape16
-pkgver=0.9.390
+pkgver=0.9.380
 pkgrel=1
 pkgdesc='Destructive tape-style DAW (Appimage)'
 arch=(x86_64)
@@ -35,4 +35,3 @@ package() {
     # Icons
     cp -r --no-preserve=mode,ownership "${srcdir}/squashfs-root/usr/share/icons" "${pkgdir}/usr/share/"
 }
-
