@@ -88,6 +88,15 @@ jobs:
                   fi
                 fi
 
+                # Probar url para ver si existe el release.
+                SOURCE_URL=$(cd "$PKG_DIR" && makepkg --printsrcinfo | grep -E '^\s*source = ' | head -n 1 | awk -F:: '{print $2}')
+                if ! curl -fsLI "$SOURCE_URL" -o /dev/null; 
+                then
+                  echo "Release not found. Skipping package."
+                  git checkout -- "${PKG_DIR}PKGBUILD" 2>/dev/null || true
+                  continue
+                fi
+
                 # Asignar permisos al usuario builder para este directorio
                 chown -R builder:builder "$PKG_DIR"
                 
