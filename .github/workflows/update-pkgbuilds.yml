@@ -96,7 +96,7 @@ jobs:
                 if ! curl -fsLI "$SOURCE_URL" -o /dev/null; 
                 then
                   echo "Release not found. Skipping package."
-                  git checkout -- "${PKG_DIR}PKGBUILD" 2>/dev/null || true
+                  git restore "${PKG_DIR}PKGBUILD"
                   continue
                 fi
                 
