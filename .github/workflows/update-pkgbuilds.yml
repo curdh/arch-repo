@@ -92,7 +92,7 @@ jobs:
                 chown -R builder:builder "$PKG_DIR"
                 
                 # Probar url para ver si existe el release.
-                SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | grep -E '^\s*source = ' | head -n 1 | awk -F'[:][:]' '{print $2}'")
+                SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | grep -E '^\s*source = ' | head -n 1 | awk '{print $3}' | sed 's/^[^:]*:://'")
                 echo "  - PROBANDO URL: $SOURCE_URL"
                 if ! curl -fsLI "$SOURCE_URL" -o /dev/null; 
                 then
