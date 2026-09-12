@@ -1,0 +1,19 @@
+pkgbase = soh-bin
+	pkgdesc = An unofficial port of The Legend of Zelda Ocarina of Time for PC, Wii U, and Switch (Appimage)
+	pkgver = 9.2.3
+	pkgrel = 1
+	url = https://shipofharkinian.com/
+	arch = x86_64
+	license = unknown
+	depends = fuse2
+	depends = zlib
+	provides = soh
+	conflicts = soh
+	options = !strip
+	options = !debug
+	source = soh-9.2.3-linux.zip::https://github.com/HarbourMasters/Shipwright/releases/download/9.2.3/SoH-Ackbar-Delta-Linux.zip
+	source = soh.sh
+	sha256sums = f81cde8052142d6abbbaaffa70699d6748e4cde3f158be8f268c3aab338ee315
+	sha256sums = 2f8281dfb7d240bafd69a664e0426cb140573c293259ab54d6c9768130b36c1c
+
+pkgname = soh-bin

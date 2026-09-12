@@ -1,0 +1,19 @@
+pkgbase = corsix-th-bin
+	pkgdesc = Reimplementation of the game engine of Theme Hospital (Appimage)
+	pkgver = 0.70.1
+	pkgrel = 1
+	url = https://corsixth.com/
+	arch = x86_64
+	license = MIT
+	depends = zlib
+	depends = fuse2
+	provides = corsix-th
+	conflicts = corsix-th
+	conflicts = corsix-th-git
+	noextract = CorsixTH-v0.70.1-x86_64.AppImage
+	options = !strip
+	options = !debug
+	source = CorsixTH-v0.70.1-x86_64.AppImage::https://github.com/CorsixTH/CorsixTH/releases/download/v0.70.1/CorsixTH-v0.70.1-x86_64.AppImage
+	sha256sums = f228510a6a0e7450e836cd4aace5b2e278638c0ce91eaf00de81c27c06dab14d
+
+pkgname = corsix-th-bin
