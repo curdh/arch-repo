@@ -138,7 +138,7 @@ jobs:
 
                 # Construir paquete.
                 echo "  - Construyendo paquete $PKG_NAME..."
-                if su builder -c "cd '$BUILD_TEMP' && OPTIONS='!debug' makepkg -sc --noconfirm"; 
+                if su builder -c "cd '$BUILD_TEMP' && makepkg -sc --noconfirm"; 
                 then
                   echo "  - $PKG_NAME compilado con éxito."
                   # Mover el binario generado a la carpeta de salida
