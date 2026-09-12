@@ -7,7 +7,7 @@ on:
 
 env:
   # Lista de paquetes a construir. 'ALL' para construir todos
-  PKGS_TO_BUILD: "lgogdownloader"
+  PKGS_TO_BUILD: "lgogdownloader paru"
 
 jobs:
   update-pkgbuilds:
