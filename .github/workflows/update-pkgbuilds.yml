@@ -162,7 +162,7 @@ jobs:
               mkdir -p /tmp
               chmod 1777 /tmp
               
-              repo-add -n -R curdh.db.tar.gz *.pkg.tar.zst
+              repo-add -n -R curdh-bin.db.tar.gz *.pkg.tar.zst
             else
               echo "No se generaron archivos .pkg.tar.zst para empaquetar."
             fi
@@ -193,7 +193,7 @@ jobs:
           body: "Repositorio binario de Pacman actualizado automáticamente."
           files: |
             build_output/*.pkg.tar.zst
-            build_output/curdh.db*
-            build_output/curdh.files*
+            build_output/curdh-bin.db*
+            build_output/curdh-bin.files*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
