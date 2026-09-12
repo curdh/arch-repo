@@ -33,7 +33,7 @@ jobs:
           chown -R builder:builder .
 
           # Cambiar 'debug' por '!debug' en /etc/makepkg.conf
-          sed -i 's/\bdebug\b/!debug/g' /etc/makepkg.conf
+          #sed -i 's/\bdebug\b/!debug/g' /etc/makepkg.conf
           
       - name: Checkout del repositorio
         uses: actions/checkout@v4.2.2
