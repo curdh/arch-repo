@@ -93,7 +93,7 @@ jobs:
                 
                 # Probar url para ver si existe el release.
                 #SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $3}' | sed 's/^[^:]*:://'")
-                SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $2}'")
+                SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $2}' | sed 's/^[^:]*= //'")
                 echo "  - PROBANDO URL: $SOURCE_URL"
                 exit
                 if ! curl -fsLI "$SOURCE_URL" -o /dev/null; 
