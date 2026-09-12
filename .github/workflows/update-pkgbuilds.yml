@@ -93,6 +93,7 @@ jobs:
                 
                 # Probar url para ver si existe el release.
                 SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | grep -E '^\s*source = ' | head -n 1 | awk -F:: '{print $2}'")
+                echo "  - PROBANDO URL: $SOURCE_URL"
                 if ! curl -fsLI "$SOURCE_URL" -o /dev/null; 
                 then
                   echo "Release not found. Skipping package."
