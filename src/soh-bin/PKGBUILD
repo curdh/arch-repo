@@ -14,7 +14,7 @@ provides=('soh')
 source=("soh-${pkgver}-linux.zip::https://github.com/HarbourMasters/Shipwright/releases/download/${pkgver}/${_release}.zip"
         "soh.sh")
 sha256sums=('f81cde8052142d6abbbaaffa70699d6748e4cde3f158be8f268c3aab338ee315'
-            'a019812db47179a18351e12d449299e1c22bf047edf485f65389e6f8aa8b9071')
+            '2f8281dfb7d240bafd69a664e0426cb140573c293259ab54d6c9768130b36c1c')
 options=(!strip !debug)
 _appimage="soh.appimage"
 
