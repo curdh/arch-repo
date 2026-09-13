@@ -105,6 +105,7 @@ jobs:
                 # Crear una carpeta temporal aislada fuera del repositorio de Git
                 rm -rf "$BUILD_TEMP"
                 mkdir -p "$BUILD_TEMP"
+                chown -R builder:builder "$BUILD_TEMP"
 
                 # Actualizar sha256sums y verificar con namcap.
                 su builder -c "cd '$PKG_DIR' && updpkgsums"
@@ -134,9 +135,6 @@ jobs:
                 if ! grep -q "^conflicts=" "${BUILD_TEMP}/PKGBUILD"; then
                   echo "conflicts=('$PKG_NAME')" >> "${BUILD_TEMP}/PKGBUILD"
                 fi
-
-                # Asignar propiedad al usuario builder en la carpeta temporal
-                chown -R builder:builder "$BUILD_TEMP"
 
                 # Construir paquete.
                 echo "  - Construyendo paquete $PKG_NAME..."
