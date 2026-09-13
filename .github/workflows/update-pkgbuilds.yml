@@ -102,6 +102,10 @@ jobs:
                   continue
                 fi
                 
+                # Crear una carpeta temporal aislada fuera del repositorio de Git
+                rm -rf "$BUILD_TEMP"
+                mkdir -p "$BUILD_TEMP"
+
                 # Actualizar sha256sums y verificar con namcap.
                 su builder -c "cd '$PKG_DIR' && updpkgsums"
                 (namcap -i "${PKG_DIR}PKGBUILD")
@@ -117,10 +121,6 @@ jobs:
                     continue
                   fi
                 fi
-
-                # Crear una carpeta temporal aislada fuera del repositorio de Git
-                rm -rf "$BUILD_TEMP"
-                mkdir -p "$BUILD_TEMP"
 
                 # Copiar todos los archivos de la receta (PKGBUILD, parches, .install, etc.)
                 cp -r "${PKG_DIR}/"* "$BUILD_TEMP"/
