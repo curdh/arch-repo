@@ -153,7 +153,13 @@ jobs:
 
           if [ -n "$SELECTED_PKGS" ];
           then
-            # Generar la base de datos de Pacman con repo-add
+            # descargar la base de datos si ya existe y agregar los paquetes compilados.
+            gh release download latest \
+              --dir "$REPO_DIR" \
+              --pattern "curdh.db*" \
+              --pattern "curdh.files*" \
+              --clobber 2>/dev/null
+
             cd "$REPO_DIR"
             if ls *.pkg.tar.zst 1> /dev/null 2>&1; 
             then
