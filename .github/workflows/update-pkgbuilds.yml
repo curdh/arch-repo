@@ -156,8 +156,13 @@ jobs:
             echo "Actualizando base de datos.."
             # descargar la base de datos si ya existe y agregar los paquetes compilados.
             BASE_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/latest"
-            curl -fsSL "${BASE_URL}/curdh.db.tar.gz" -o "$REPO_DIR/curdh.db.tar.gz" 2>/dev/null
-            curl -fsSL "${BASE_URL}/curdh.files.tar.gz" -o "$REPO_DIR/curdh.files.tar.gz" 2>/dev/null
+            curl -sSL "${BASE_URL}/curdh-bin.db.tar.gz" -o "$REPO_DIR/curdh-bin.db.tar.gz" 2>/dev/null || true
+            curl -sSL "${BASE_URL}/curdh-bin.files.tar.gz" -o "$REPO_DIR/curdh-bin.files.tar.gz" 2>/dev/null || true
+
+            # Validar si el archivo descargado es realmente un .tar.gz válido (y no una página de error 404 en HTML)
+            if ! file "$REPO_DIR/curdh-bin.db.tar.gz" 2>/dev/null | grep -q "gzip compressed data"; then
+              rm -f "$REPO_DIR/curdh-bin.db.tar.gz" "$REPO_DIR/curdh-bin.files.tar.gz"
+            fi
 
             cd "$REPO_DIR"
             if ls *.pkg.tar.zst 1> /dev/null 2>&1; 
