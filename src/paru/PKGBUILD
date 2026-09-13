@@ -1,6 +1,6 @@
 # Maintainer: Morgan <morganamilo@archlinux.org>
 pkgname=paru
-pkgver=2.1.0
+pkgver=2.0.0
 pkgrel=1
 pkgdesc='Feature packed AUR helper'
 url='https://github.com/morganamilo/paru'
@@ -15,13 +15,13 @@ sha256sums=('eea4dbb524db765d5316f540f9ee670c0bf81aae4827b5417eebb4c9b5651727')
 options=(!debug)
 
 prepare() {
-  cd "$pkgname-$pkgver"
+  cd "paru-$pkgver"
   cargo update alpm alpm-utils
   cargo fetch --locked --target "$(rustc -vV | sed -n 's|host: ||p')"
 }
 
 build () {
-  cd "$srcdir/$pkgname-$pkgver"
+  cd "$srcdir/paru-$pkgver"
 
   if pacman -T pacman-git > /dev/null; then
     _features+="git,"
@@ -36,7 +36,7 @@ build () {
 }
 
 package() {
-  cd "$srcdir/$pkgname-$pkgver"
+  cd "$srcdir/paru-$pkgver"
 
   install -Dm755 target/release/paru "${pkgdir}/usr/bin/paru"
   install -Dm644 paru.conf "${pkgdir}/etc/paru.conf"
