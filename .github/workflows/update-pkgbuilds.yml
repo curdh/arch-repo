@@ -154,11 +154,9 @@ jobs:
           if [ -n "$SELECTED_PKGS" ];
           then
             # descargar la base de datos si ya existe y agregar los paquetes compilados.
-            gh release download latest \
-              --dir "$REPO_DIR" \
-              --pattern "curdh.db*" \
-              --pattern "curdh.files*" \
-              --clobber 2>/dev/null
+            BASE_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/latest"
+            curl -fsSL "${BASE_URL}/curdh.db.tar.gz" -o "$REPO_DIR/curdh.db.tar.gz" 2>/dev/null
+            curl -fsSL "${BASE_URL}/curdh.files.tar.gz" -o "$REPO_DIR/curdh.files.tar.gz" 2>/dev/null
 
             cd "$REPO_DIR"
             if ls *.pkg.tar.zst 1> /dev/null 2>&1; 
