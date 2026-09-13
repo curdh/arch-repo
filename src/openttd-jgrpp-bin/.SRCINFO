@@ -15,7 +15,10 @@ pkgbase = openttd-jgrpp-bin
 	optdepends = openttd-jgrpp-openmsx: free music set
 	provides = openttd-jgrpp
 	conflicts = openttd-jgrpp
+	conflicts = openttd
 	source = openttd-jgrpp-0.73.2-linux-generic-amd64.tar.xz::https://github.com/JGRennison/OpenTTD-patches/releases/download/jgrpp-0.73.2/openttd-jgrpp-0.73.2-linux-generic-amd64.tar.xz
+	source = openttd.sh
 	sha256sums = 18731d8157e258654dffd6e0cbd009975ddc530a8f6ef23879c2286d544f3d25
+	sha256sums = 623e3cbe3c8786fbeef119ffdd22fa660cf1fdd9f8a21ba54c0da4d3db8f6b7a
 
 pkgname = openttd-jgrpp-bin

@@ -20,26 +20,30 @@ optdepends=(
     'openttd-jgrpp-openmsx: free music set'
 )
 provides=('openttd-jgrpp')
-conflicts=('openttd-jgrpp')
-source=("${_release}.tar.xz::https://github.com/JGRennison/OpenTTD-patches/releases/download/jgrpp-${pkgver}/${_release}.tar.xz")
-sha256sums=('18731d8157e258654dffd6e0cbd009975ddc530a8f6ef23879c2286d544f3d25')
+conflicts=(
+    'openttd-jgrpp'
+    'openttd'
+)
+source=(
+    "${_release}.tar.xz::https://github.com/JGRennison/OpenTTD-patches/releases/download/jgrpp-${pkgver}/${_release}.tar.xz"
+    "openttd.sh"
+)
+sha256sums=('18731d8157e258654dffd6e0cbd009975ddc530a8f6ef23879c2286d544f3d25'
+            '623e3cbe3c8786fbeef119ffdd22fa660cf1fdd9f8a21ba54c0da4d3db8f6b7a')
 
 package() {
-    install -dm755 "${pkgdir}/usr/bin"
-    install -dm755 "${pkgdir}/usr/share"
-    install -dm755 "${pkgdir}/usr/share/docs"
-    install -dm755 "${pkgdir}/usr/share/${_pkgname}"
+    install -Dm755 "openttd.sh" "${pkgdir}/usr/bin/openttd"
+    chmod 755 "${pkgdir}/usr/bin/openttd"
 
-    install -Dm755 "${srcdir}/${_release}/openttd" "${pkgdir}/usr/bin/openttd"
-    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/docs" "${pkgdir}/usr/share/docs/${_pkgname}/"
-    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/share/applications" "${pkgdir}/usr/share/"
-    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/share/icons" "${pkgdir}/usr/share/"
-    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/share/pixmaps" "${pkgdir}/usr/share/"
+    cd "${srcdir}/${_release}"
 
-    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/ai" "${pkgdir}/usr/share/${_pkgname}/ai"
-    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/baseset" "${pkgdir}/usr/share/${_pkgname}/baseset"
-    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/game" "${pkgdir}/usr/share/${_pkgname}/game"
-    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/lang" "${pkgdir}/usr/share/${_pkgname}/lang"
-    cp -r --no-preserve=mode,ownership "${srcdir}/${_release}/scripts" "${pkgdir}/usr/share/${_pkgname}/scripts"
+    install -dm755 "${pkgdir}/usr/lib/${_pkgname}"
+    cp -dr --no-preserve=ownership * "${pkgdir}/usr/lib/${_pkgname}/"
+
+    if [ -d "${pkgdir}/usr/lib/${_pkgname}/share" ]; then
+        install -dm755 "${pkgdir}/usr/share"
+        cp -dr --no-preserve=ownership "${pkgdir}/usr/lib/${_pkgname}/share/"* "${pkgdir}/usr/share/"
+        rm -rf "${pkgdir}/usr/lib/${_pkgname}/share"
+    fi
 }
 
