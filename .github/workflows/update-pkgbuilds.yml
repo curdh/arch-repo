@@ -153,6 +153,7 @@ jobs:
 
           if [ -n "$SELECTED_PKGS" ];
           then
+            echo "Actualizando base de datos.."
             # descargar la base de datos si ya existe y agregar los paquetes compilados.
             BASE_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/latest"
             curl -fsSL "${BASE_URL}/curdh.db.tar.gz" -o "$REPO_DIR/curdh.db.tar.gz" 2>/dev/null
@@ -161,7 +162,6 @@ jobs:
             cd "$REPO_DIR"
             if ls *.pkg.tar.zst 1> /dev/null 2>&1; 
             then
-              echo "Generando base de datos del repositorio..."
               # Garantizar que /tmp exista y tenga permisos de lectura/escritura/ejecución
               mkdir -p /tmp
               chmod 1777 /tmp
