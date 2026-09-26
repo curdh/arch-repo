@@ -95,7 +95,8 @@ jobs:
                 SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $2}' | sed 's/^[^:]*= //' | sed 's/^[^:]*:://'")
                 if ! curl -fsLI "$SOURCE_URL" -o /dev/null; 
                 then
-                  echo "  - Release no encontrada. Saltando paquete."
+                  echo "  - Release no encontrada: $SOURCE_URL"
+                  echo "  - Saltando paquete."
                   git restore "${PKG_DIR}PKGBUILD"
                   continue
                 fi
