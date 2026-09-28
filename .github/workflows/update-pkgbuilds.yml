@@ -92,10 +92,21 @@ jobs:
                 chown -R builder:builder "$PKG_DIR"
                 
                 # Probar url para ver si existe el release.
-                SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $3}' | awk '/http/ {print $0}' | sed 's/^[^:]*= //' | sed 's/^[^:]*:://'")
-                if ! curl -fsLI "$SOURCE_URL" -o /dev/null; 
+                SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $3}' | sed 's/^[^:]*= //' | sed 's/^[^:]*:://'")
+                REL_NOT_FOUND=false
+                while IFS= read -r line; do
+                  if [[ $line == *http* ]];
+                  then
+                    if ! curl -fsLI "$line" -o /dev/null; 
+                    then
+                      echo "  - Release no encontrada: $line"
+                      REL_NOT_FOUND=true
+                      break
+                    fi
+                  fi
+                done
+                if [ $REL_NOT_FOUND ];
                 then
-                  echo "  - Release no encontrada: $SOURCE_URL"
                   echo "  - Saltando paquete."
                   git restore "${PKG_DIR}PKGBUILD"
                   continue
