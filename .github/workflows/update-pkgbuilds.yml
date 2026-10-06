@@ -76,12 +76,12 @@ jobs:
                 sed -i "s/^pkgver=.*/pkgver=$CLEAN_VER/" "${PKG_DIR}PKGBUILD"
                 sed -i "s/^pkgrel=.*/pkgrel=1/" "${PKG_DIR}PKGBUILD"
                 
-                # Si el PKGBUILD requiere _codename, lo extraemos directamente del nombre de la release
-                if grep -q "^_codename=" "${PKG_DIR}PKGBUILD"; then
+                # Buscar el codename para soh
+                if [ "${PKG_DIR}" == "soh-bin" ]; then
                   RELEASE_TITLE=$(echo "$RELEASE_JSON" | jq -r .name)
                   
                   # Obtener el codename
-                  NEW_CODENAME=$(echo "$RELEASE_TITLE" | sed -E 's/^[0-9.]+//; s/[()"]//g; s/^\s+|\s+$//g; s/ +/-/g')
+                  NEW_CODENAME=$(echo "$RELEASE_TITLE" | awk '{print $1"-"$2}')
                   
                   if [ -n "$NEW_CODENAME" ] && [ "$NEW_CODENAME" != "null" ]; then
                     sed -i "s/^_codename=.*/_codename=\"$NEW_CODENAME\"/" "${PKG_DIR}PKGBUILD"
