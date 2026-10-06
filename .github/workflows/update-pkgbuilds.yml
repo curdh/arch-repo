@@ -95,9 +95,7 @@ jobs:
                 SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $3}' | sed 's/^[^:]*= //' | sed 's/^[^:]*:://'")
                 REL_NOT_FOUND=false
                 while IFS= read -r line; do
-                  echo "$line"
                   if [[ $line == *http* ]];
-                  
                   then
                     if ! curl -fsLI "$line" -o /dev/null; 
                     then
