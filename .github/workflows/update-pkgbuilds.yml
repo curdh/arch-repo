@@ -93,6 +93,7 @@ jobs:
                 
                 # Probar url para ver si existe el release.
                 SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $3}' | sed 's/^[^:]*= //' | sed 's/^[^:]*:://'")
+                echo "$SOURCE_URL"
                 REL_NOT_FOUND=false
                 while IFS= read -r line; do
                   if [[ $line == *http* ]];
