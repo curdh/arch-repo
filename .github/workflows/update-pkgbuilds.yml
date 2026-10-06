@@ -95,8 +95,9 @@ jobs:
                 SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $3}' | sed 's/^[^:]*= //' | sed 's/^[^:]*:://'")
                 REL_NOT_FOUND=false
                 while IFS= read -r line; do
-                  if [[ $line == *http* ]];
                   echo "$line"
+                  if [[ $line == *http* ]];
+                  
                   then
                     if ! curl -fsLI "$line" -o /dev/null; 
                     then
@@ -105,7 +106,7 @@ jobs:
                       break
                     fi
                   fi
-                done < echo "$SOURCE_URL"
+                done
                 if [ $REL_NOT_FOUND == "true" ];
                 then
                   echo "  - Saltando paquete."
