@@ -77,7 +77,7 @@ jobs:
                 sed -i "s/^pkgrel=.*/pkgrel=1/" "${PKG_DIR}PKGBUILD"
                 
                 # Buscar el codename para soh
-                if [ "${PKG_DIR}" == "soh-bin" ]; then
+                if [ "$PKG_DIR" == "soh-bin" ]; then
                   RELEASE_TITLE=$(echo "$RELEASE_JSON" | jq -r .name)
                   
                   # Obtener el codename
@@ -106,7 +106,7 @@ jobs:
                       break
                     fi
                   fi
-                done
+                done <<< "$SOURCE_URL"
                 if [ $REL_NOT_FOUND == "true" ];
                 then
                   echo "  - Saltando paquete."
