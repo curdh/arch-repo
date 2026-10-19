@@ -75,12 +75,10 @@ jobs:
                 # Actualizar pkgver
                 sed -i "s/^pkgver=.*/pkgver=$CLEAN_VER/" "${PKG_DIR}PKGBUILD"
                 sed -i "s/^pkgrel=.*/pkgrel=1/" "${PKG_DIR}PKGBUILD"
-                echo "$PKG_DIR"
                 
                 # Buscar el codename para soh
-                if [ "$PKG_DIR" == "soh-bin" ]; then
+                if [ "$PKG_DIR" == *soh-bin* ]; then
                   RELEASE_TITLE=$(echo "$RELEASE_JSON" | jq -r .name)
-                  echo "codename: $RELEASE_TITLE"
                   
                   # Obtener el codename
                   NEW_CODENAME=$(echo "$RELEASE_TITLE" | awk '{print $1"-"$2}')
