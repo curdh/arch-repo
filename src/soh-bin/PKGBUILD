@@ -3,7 +3,8 @@ _pkgname="soh"
 pkgver=9.2.3
 pkgrel=1
 _codename="Ackbar-Delta"
-_release="SoH-${_codename}-Linux"
+_release="SoH-${_codename}"
+_appimage="${_release}.appimage"
 pkgdesc='An unofficial port of The Legend of Zelda Ocarina of Time for PC, Wii U, and Switch (Appimage)'
 arch=(x86_64)
 url="https://shipofharkinian.com/"
@@ -11,12 +12,12 @@ license=('unknown')
 depends=(fuse2 zlib)
 conflicts=('soh')
 provides=('soh')
-source=("soh-${pkgver}-linux.zip::https://github.com/HarbourMasters/Shipwright/releases/download/${pkgver}/${_release}.zip"
+source=("${_appimage}::https://github.com/HarbourMasters/Shipwright/releases/download/${pkgver}/${_appimage}"
         "soh.sh")
 sha256sums=('f81cde8052142d6abbbaaffa70699d6748e4cde3f158be8f268c3aab338ee315'
             '2f8281dfb7d240bafd69a664e0426cb140573c293259ab54d6c9768130b36c1c')
 options=(!strip !debug)
-_appimage="soh.appimage"
+
 
 prepare() {
     chmod +x "${_appimage}"
