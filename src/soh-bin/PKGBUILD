@@ -1,8 +1,8 @@
 pkgname=soh-bin
 _pkgname="soh"
-pkgver=9.2.3
+pkgver=9.3.1
 pkgrel=1
-_codename="Ackbar-Delta"
+_codename="Dewey-Bravo"
 _release="SoH-${_codename}"
 _appimage="${_release}.appimage"
 pkgdesc='An unofficial port of The Legend of Zelda Ocarina of Time for PC, Wii U, and Switch (Appimage)'
@@ -14,7 +14,7 @@ conflicts=('soh')
 provides=('soh')
 source=("${_appimage}::https://github.com/HarbourMasters/Shipwright/releases/download/${pkgver}/${_appimage}"
         "soh.sh")
-sha256sums=('f81cde8052142d6abbbaaffa70699d6748e4cde3f158be8f268c3aab338ee315'
+sha256sums=('e4bb775c9a0c3629ebac57e4b6ccba6d0b621d71ab201e9105aceef9141ad1f4'
             '2f8281dfb7d240bafd69a664e0426cb140573c293259ab54d6c9768130b36c1c')
 options=(!strip !debug)
 
