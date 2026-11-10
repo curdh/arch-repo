@@ -7,7 +7,7 @@ on:
 
 env:
   # Lista de paquetes a construir. 'ALL' para construir todos
-  PKGS_TO_BUILD: "bzmenu iwmenu lgogdownloader paru pam-gnupg pwmenu"
+  PKGS_TO_BUILD: "bzmenu iwmenu lgogdownloader paru pam-gnupg pwmenu whatsdesk"
 
 jobs:
   update-pkgbuilds:
