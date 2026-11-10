@@ -1,0 +1,43 @@
+# Maintainer: e-tho <@e-tho:matrix.org>
+pkgname=pwmenu
+pkgver=0.3.0
+pkgrel=1
+pkgdesc="Launcher-driven audio manager for Linux"
+arch=('x86_64')
+url="https://github.com/e-tho/pwmenu"
+license=('GPL-3.0-or-later')
+depends=('pipewire' 'gcc-libs')
+makedepends=('cargo' 'libpipewire')
+optdepends=(
+  'dmenu: launcher for options navigation via stdin'
+  'rofi: launcher for options navigation via stdin'
+  'fuzzel: launcher for options navigation via stdin'
+  'walker: launcher for options navigation via stdin'
+  'nerd-fonts: for font-based icons (default mode)'
+)
+conflicts=($pkgname-git $pkgname-bin)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
+sha256sums=('e16066d53d02a298372bb23bec68a7f47aa7fb17c423afe180e08fcf9893322c')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+
+  export RUSTUP_TOOLCHAIN=stable
+
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  export RUSTUP_TOOLCHAIN="stable"
+  export CARGO_TARGET_DIR="target"
+
+  cargo build --release --locked
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  install -Dm755 -t "${pkgdir}/usr/bin" "target/release/$pkgname"
+}
