@@ -1,4 +1,4 @@
-pkgbase = whatsdesk-bin
+pkgbase = whatsdesk
 	pkgdesc = unofficial client of whatsapp
 	pkgver = 0.3.13
 	pkgrel = 1
@@ -17,4 +17,4 @@ pkgbase = whatsdesk-bin
 	sha256sums_x86_64 = 54839a21f738e55735f151dbd096e5fae7ba87e9960e163e6ace1bf38a91c92b
 	sha256sums_x86_64 = 38f8c3d94c9497be761fc95f10d3c530a693bae33fa89d5ce29fe1fac45e3aea
 
-pkgname = whatsdesk-bin
+pkgname = whatsdesk
