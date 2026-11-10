@@ -1,7 +1,7 @@
 # Contributor: Giancarlo Grasso <gianniesoft at gmail dot com>
 # Maintainer: Alan Beale <the dot mrabz at gmail dot com>
 
-pkgname=whatsdesk-bin
+pkgname=whatsdesk
 pkgver=0.3.13
 pkgrel=1
 pkgdesc="unofficial client of whatsapp"
