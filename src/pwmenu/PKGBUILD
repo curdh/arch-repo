@@ -31,14 +31,22 @@ prepare() {
 build() {
   cd "pwmenu-$pkgver"
 
-  export RUSTUP_TOOLCHAIN="stable"
+  export CARGO_HOME="$srcdir/cargo"
   export CARGO_TARGET_DIR="target"
+  export RUSTFLAGS="--remap-path-prefix=${srcdir}=/"
+
+  # Force clang for libspa-sys compatibility
+  export CC=clang
+  export AR=ar
+  export LIBCLANG_PATH="$(llvm-config --libdir)"
+
+  [[ -n ${_sccache} ]] && export RUSTC_WRAPPER=sccache
 
   cargo build --release --locked
 }
 
 package() {
   cd "pwmenu-$pkgver"
-
   install -Dm755 -t "${pkgdir}/usr/bin" "target/release/pwmenu"
+  install -Dm644 LICENSE.md "$pkgdir/usr/share/licenses/pwmenu/LICENSE.md"
 }
