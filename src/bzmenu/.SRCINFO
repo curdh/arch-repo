@@ -16,6 +16,7 @@ pkgbase = bzmenu
 	optdepends = nerd-fonts: for font-based icons (default mode)
 	conflicts = bzmenu-git
 	conflicts = bzmenu-bin
+	options = !debug
 	source = bzmenu-0.4.0.tar.gz::https://github.com/e-tho/bzmenu/archive/v0.4.0.tar.gz
 	sha256sums = d38db4f9d530126ab7d0fc4487f25b2da0b3b7e17ffc2635e92151d9f4a4253f
 
