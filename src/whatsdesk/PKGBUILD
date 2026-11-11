@@ -10,6 +10,7 @@ url="https://gitlab.com/zerkc/whatsdesk/"
 license=('MIT')
 provides=('whatsdesk')
 conflicts=('whatsdesk-git')
+options=(!debug)
 depends=('libxss'
          'nss'
          'libxtst'

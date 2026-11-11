@@ -18,6 +18,7 @@ optdepends=(
 conflicts=(pwmenu-git pwmenu-bin)
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
 sha256sums=('e16066d53d02a298372bb23bec68a7f47aa7fb17c423afe180e08fcf9893322c')
+options=(!debug)
 
 prepare() {
   cd "pwmenu-$pkgver"
@@ -39,5 +40,5 @@ build() {
 package() {
   cd "pwmenu-$pkgver"
 
-  install -Dm755 -t "${pkgdir}/usr/bin" "target/release/$pkgname"
+  install -Dm755 -t "${pkgdir}/usr/bin" "target/release/pwmenu"
 }
