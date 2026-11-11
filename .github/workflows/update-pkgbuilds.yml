@@ -137,7 +137,11 @@ jobs:
                 cp -r "${PKG_DIR}/"* "$BUILD_TEMP"/
 
                 # Inyectar '-bin', 'provides' y 'conflicts' SOLO en el PKGBUILD temporal
-                sed -i -E 's/^pkgname=(["'\''"]?)([^"'\''\n]+)\1/pkgname=\1\2-bin\1/' "${BUILD_TEMP}/PKGBUILD"
+                sed -i -E '
+                  s/^(pkgname=\()([^)]*)(\))/\1\2-bin\3/; t
+                  s/^pkgname=(["'\''"]?)([^"'\''\n]+)\1/pkgname=\1\2-bin\1/
+                  s/^(package_)([^()[:space:]]+)(\s*\()/\1\2-bin\3/g
+                ' "${BUILD_TEMP}/PKGBUILD"
 
                 if ! grep -q "^provides=" "${BUILD_TEMP}/PKGBUILD"; then
                   echo "provides=('$PKG_NAME')" >> "${BUILD_TEMP}/PKGBUILD"
