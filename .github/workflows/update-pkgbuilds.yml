@@ -58,14 +58,39 @@ jobs:
               PKG_NAME=$(basename "$PKG_DIR")
               echo "Procesando $PKG_NAME..."
               
-              # Obtener repositorio de GitHub desde el PKGBUILD
-              GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//' | tr -d '"'\''')
-              [ -z "$GH_REPO" ] && continue
+              # 1. Detectar si el PKGBUILD usa GitHub o GitLab y extraer el repositorio
+              if GH_REPO=$(grep -oP 'github\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//' | tr -d '"'\''') && [ -n "$GH_REPO" ]; then
+                  PLATFORM="github"
+                  REPO="$GH_REPO"
+              elif GL_REPO=$(grep -oP 'gitlab\.com/\K[^/\s)]+/[^/\s).]+' "${PKG_DIR}PKGBUILD" | head -n 1 | sed 's/\.git$//' | tr -d '"'\''') && [ -n "$GL_REPO" ]; then
+                  PLATFORM="gitlab"
+                  REPO="$GL_REPO"
+              else
+                  echo " - No se ha identificado si pertenece a Github o Gitlab. Saltando PKGBUILD."
+                  continue
+              fi
               
-              # Consultar la última release en la API
-              RELEASE_JSON=$(curl -s "https://api.github.com/repos/$GH_REPO/releases/latest")
-              LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
+              # 2. Consultar la API correspondiente para obtener el último tag
+              if [ "$PLATFORM" == "github" ]; then
+                  RELEASE_JSON=$(curl -s "https://api.github.com/repos/$REPO/releases/latest")
+                  LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
+              elif [ "$PLATFORM" == "gitlab" ]; then
+                  # GitLab requiere codificar la barra inclinada como %2F
+                  ENCODED_REPO=$(echo "$REPO" | sed 's/\//%2F/g')
+                  
+                  # Intentar primero con la API de Releases de GitLab (devuelve un array)
+                  RELEASE_JSON=$(curl -s "https://gitlab.com/api/v4/projects/$ENCODED_REPO/releases")
+                  LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r '.[0].tag_name // empty')
+                  
+                  # Si no tiene releases formales, buscar en los tags del repositorio
+                  if [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ]; then
+                      TAGS_JSON=$(curl -s "https://gitlab.com/api/v4/projects/$ENCODED_REPO/repository/tags")
+                      LATEST_TAG=$(echo "$TAGS_JSON" | jq -r '.[0].name // empty')
+                  fi
+              fi
+
               [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && continue
+              
               CLEAN_VER=$(echo "$LATEST_TAG" | grep -oP '\d+(\.\d+)+' | head -n 1)
               CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
 
