@@ -16,19 +16,19 @@ optdepends=('dmenu: launcher for options navigation via stdin'
 	'walker: launcher for options navigation via stdin'
 	'nerd-fonts: for font-based icons (default mode)'
 )
-conflicts=($pkgname-git $pkgname-bin)
+conflicts=(iwmenu-git iwmenu-bin)
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
 sha256sums=('feb608a42bf7cdc77babade9610d577d7e86e17e06f9426759a3457c0ca106b0')
 
 prepare() {
-	cd "$pkgname-$pkgver"
+	cd "iwmenu-$pkgver"
 
 	export RUSTUP_TOOLCHAIN="stable"
     	cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 	}
 
 build() {
-	cd "$pkgname-$pkgver"
+	cd "iwmenu-$pkgver"
 
 	export RUSTUP_TOOLCHAIN="stable"
 	export CARGO_TARGET_DIR="target"
@@ -37,7 +37,7 @@ build() {
 	}
 
 package() {
-	cd "$pkgname-$pkgver"
+	cd "iwmenu-$pkgver"
 
 	install -Dm755 -t "${pkgdir}/usr/bin" "target/release/$pkgname" 
 }

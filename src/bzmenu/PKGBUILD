@@ -15,12 +15,12 @@ optdepends=('dmenu: launcher for options navigation via stdin'
 	'walker: launcher for options navigation via stdin'
 	'nerd-fonts: for font-based icons (default mode)'
 )
-conflicts=($pkgname-git $pkgname-bin)
+conflicts=(bzmenu-git bzmenu-bin)
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
 sha256sums=('d38db4f9d530126ab7d0fc4487f25b2da0b3b7e17ffc2635e92151d9f4a4253f')
 
 prepare() {
-	cd "$pkgname-$pkgver"
+	cd "bzmenu-$pkgver"
 
 	export RUSTUP_TOOLCHAIN=stable
 
@@ -28,7 +28,7 @@ prepare() {
 }
 
 build() {
-	cd "$pkgname-$pkgver"
+	cd "bzmenu-$pkgver"
 
 	export RUSTUP_TOOLCHAIN="stable"
 	export CARGO_TARGET_DIR="target"
@@ -37,7 +37,7 @@ build() {
 }
 
 package() {
-	cd "$pkgname-$pkgver"
+	cd "bzmenu-$pkgver"
 
 	install -Dm755 -t "${pkgdir}/usr/bin" "target/release/$pkgname"
 }

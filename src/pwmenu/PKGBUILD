@@ -15,12 +15,12 @@ optdepends=(
   'walker: launcher for options navigation via stdin'
   'nerd-fonts: for font-based icons (default mode)'
 )
-conflicts=($pkgname-git $pkgname-bin)
+conflicts=(pwmenu-git pwmenu-bin)
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
 sha256sums=('e16066d53d02a298372bb23bec68a7f47aa7fb17c423afe180e08fcf9893322c')
 
 prepare() {
-  cd "$pkgname-$pkgver"
+  cd "pwmenu-$pkgver"
 
   export RUSTUP_TOOLCHAIN=stable
 
@@ -28,7 +28,7 @@ prepare() {
 }
 
 build() {
-  cd "$pkgname-$pkgver"
+  cd "pwmenu-$pkgver"
 
   export RUSTUP_TOOLCHAIN="stable"
   export CARGO_TARGET_DIR="target"
@@ -37,7 +37,7 @@ build() {
 }
 
 package() {
-  cd "$pkgname-$pkgver"
+  cd "pwmenu-$pkgver"
 
   install -Dm755 -t "${pkgdir}/usr/bin" "target/release/$pkgname"
 }
