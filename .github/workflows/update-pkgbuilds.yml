@@ -242,7 +242,7 @@ jobs:
         if: success()
         with:
           tag_name: "latest"
-          name: "Arch Linux Custom Repository"
+          name: "Binaries"
           body: "Repositorio binario de Pacman actualizado automáticamente."
           files: |
             build_output/*.pkg.tar.zst
