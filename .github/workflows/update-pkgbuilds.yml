@@ -75,19 +75,23 @@ jobs:
                   RELEASE_JSON=$(curl -s "https://api.github.com/repos/$REPO/releases/latest")
                   LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
               elif [ "$PLATFORM" == "gitlab" ]; then
-                  # GitLab requiere codificar la barra inclinada como %2F
-                  ENCODED_REPO=$(echo "$REPO" | sed 's/\//%2F/g')
+                  # Fix para whatsdesk
+                  if [ "$PKG_NAME" == "whatsdesk" ]; then
+                      # Whatsdesk no tiene release ni tags, asi que busca el archivo package.json para obtener la ultima version
+                      LATEST_TAG=$(curl -s "https://gitlab.com/api/v4/projects/zerkc%2Fwhatsdesk/repository/files/package.json/raw?ref=master" | jq -r '.version')
+                  else
+                  # Cualquier otro repo gitlab
+                      # GitLab requiere codificar la barra inclinada como %2F
+                      ENCODED_REPO=$(echo "$REPO" | sed 's/\//%2F/g')
+                      # Intentar primero con la API de Releases de GitLab (devuelve un array)
+                      RELEASE_JSON=$(curl -s "https://gitlab.com/api/v4/projects/$ENCODED_REPO/releases")
+                      LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r '.[0].tag_name // empty')
                   
-                  # Intentar primero con la API de Releases de GitLab (devuelve un array)
-                  RELEASE_JSON=$(curl -s "https://gitlab.com/api/v4/projects/$ENCODED_REPO/releases")
-                  LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r '.[0].tag_name // empty')
-                  echo "$RELEASE_JSON - $LATEST_TAG"
-                  
-                  # Si no tiene releases formales, buscar en los tags del repositorio
-                  if [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ]; then
-                      TAGS_JSON=$(curl -s "https://gitlab.com/api/v4/projects/$ENCODED_REPO/repository/tags")
-                      LATEST_TAG=$(echo "$TAGS_JSON" | jq -r '.[0].name // empty')
-                      echo "$TAGS_JSON - $LATEST_TAG"
+                      # Si no tiene releases formales, buscar en los tags del repositorio
+                      if [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ]; then
+                          TAGS_JSON=$(curl -s "https://gitlab.com/api/v4/projects/$ENCODED_REPO/repository/tags")
+                          LATEST_TAG=$(echo "$TAGS_JSON" | jq -r '.[0].name // empty')
+                      fi
                   fi
               fi
 
