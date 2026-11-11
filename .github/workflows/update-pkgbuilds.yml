@@ -248,7 +248,7 @@ jobs:
         if: success()
         with:
           tag_name: "latest"
-          name: "Binaries"
+          name: "curdh-bin"
           body: "Repositorio binario de Pacman actualizado automáticamente."
           files: |
             build_output/*.pkg.tar.zst
