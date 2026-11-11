@@ -1,7 +1,7 @@
 # Maintainer: Oskar Roesler <oskar@oskar-roesler.de>
 
 pkgname=bzmenu
-pkgver=0.4.0
+pkgver=0.1.0
 pkgrel=1
 pkgdesc="Launcher-driven Bluetooth manager for Linux"
 arch=('x86_64')
