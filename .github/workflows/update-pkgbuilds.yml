@@ -81,11 +81,13 @@ jobs:
                   # Intentar primero con la API de Releases de GitLab (devuelve un array)
                   RELEASE_JSON=$(curl -s "https://gitlab.com/api/v4/projects/$ENCODED_REPO/releases")
                   LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r '.[0].tag_name // empty')
+                  echo "$RELEASE_JSON - $LATEST_TAG"
                   
                   # Si no tiene releases formales, buscar en los tags del repositorio
                   if [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ]; then
                       TAGS_JSON=$(curl -s "https://gitlab.com/api/v4/projects/$ENCODED_REPO/repository/tags")
                       LATEST_TAG=$(echo "$TAGS_JSON" | jq -r '.[0].name // empty')
+                      echo "$TAGS_JSON - $LATEST_TAG"
                   fi
               fi
 
