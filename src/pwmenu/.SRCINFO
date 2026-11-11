@@ -1,6 +1,6 @@
 pkgbase = pwmenu
 	pkgdesc = Launcher-driven audio manager for Linux
-	pkgver = 0.3.0
+	pkgver = 0.4.0
 	pkgrel = 1
 	url = https://github.com/e-tho/pwmenu
 	arch = x86_64
@@ -16,7 +16,7 @@ pkgbase = pwmenu
 	optdepends = nerd-fonts: for font-based icons (default mode)
 	conflicts = pwmenu-git
 	conflicts = pwmenu-bin
-	source = pwmenu-0.3.0.tar.gz::https://github.com/e-tho/pwmenu/archive/v0.3.0.tar.gz
-	sha256sums = e16066d53d02a298372bb23bec68a7f47aa7fb17c423afe180e08fcf9893322c
+	source = pwmenu-0.4.0.tar.gz::https://github.com/e-tho/pwmenu/archive/v0.4.0.tar.gz
+	sha256sums = 20bf39b5580bd54dfc55ebe3e6c58d5bb37f6b13b13022f38b90e6d5bbf3b132
 
 pkgname = pwmenu

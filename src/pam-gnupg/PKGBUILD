@@ -1,6 +1,6 @@
 # Maintainer: Christoph Ruegge <mail@cxcs.de>
 pkgname=pam-gnupg
-pkgver=0.1
+pkgver=0.4
 pkgrel=1
 pkgdesc="Unlock GnuPG keys on login"
 arch=('i686' 'x86_64')
