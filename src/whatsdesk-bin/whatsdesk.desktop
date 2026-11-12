@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=WhatsDesk
+Exec=/usr/bin/whatsdesk
+Comment=Unofficial WhatsApp client (AppImage)
+Icon=whatsdesk
+Type=Application
+Terminal=false
+StartupNotify=false
+Categories=Network;InstantMessaging;

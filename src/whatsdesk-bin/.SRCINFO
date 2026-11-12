@@ -1,0 +1,20 @@
+pkgbase = whatsdesk-bin
+	pkgdesc = Unofficial WhatsApp client (AppImage)
+	pkgver = 0.3.15
+	pkgrel = 1
+	url = https://gitlab.com/zerkc/whatsdesk/
+	arch = x86_64
+	license = MIT
+	depends = fuse2
+	depends = zlib
+	provides = whatsdesk
+	conflicts = whatsdesk-git
+	noextract = whatsdesk-0.3.15.AppImage
+	options = !strip
+	options = !debug
+	source_x86_64 = whatsdesk-0.3.15.AppImage::https://zerkc.gitlab.io/whatsdesk/downloads/whatsdesk-0.3.15.AppImage
+	source_x86_64 = whatsdesk.desktop
+	sha256sums_x86_64 = ee7cf206e2e89b902fdf6107682505782d414e64b596d6457477368ced6b6f07
+	sha256sums_x86_64 = cce317e70790006410d238eb1b8bf167acccaab63f0c7a67029a3b20d9cb7241
+
+pkgname = whatsdesk-bin

@@ -1,0 +1,37 @@
+_pkgname=whatsdesk
+pkgname=whatsdesk-bin
+pkgver=0.3.15
+pkgrel=1
+pkgdesc="Unofficial WhatsApp client (AppImage)"
+_appimage="whatsdesk-${pkgver}.AppImage"
+arch=('x86_64')
+url="https://gitlab.com/zerkc/whatsdesk/"
+license=('MIT')
+noextract=("${_appimage}")
+provides=('whatsdesk')
+conflicts=('whatsdesk-git')
+depends=('fuse2' 'zlib')
+options=(!strip !debug)
+source_x86_64=("${_appimage}::https://zerkc.gitlab.io/whatsdesk/downloads/${_appimage}"
+                "whatsdesk.desktop")
+sha256sums_x86_64=('ee7cf206e2e89b902fdf6107682505782d414e64b596d6457477368ced6b6f07'
+                   'cce317e70790006410d238eb1b8bf167acccaab63f0c7a67029a3b20d9cb7241')
+
+prepare() {
+  chmod +x "${_appimage}"
+  ./"${_appimage}" --appimage-extract
+}
+
+package() {
+  # AppImage
+  install -Dm755 "${srcdir}/${_appimage}" "${pkgdir}/opt/${_pkgname}/${_pkgname}.AppImage"
+  install -dm755 "${pkgdir}/usr/bin"
+  ln -s "/opt/${_pkgname}/${_pkgname}.AppImage" "${pkgdir}/usr/bin/${_pkgname}"
+
+  # Desktop file
+  install -Dm644 "whatsdesk.desktop" "${pkgdir}/usr/share/applications/${_pkgname}.desktop"
+
+  # Icons
+  install -dm755 "${pkgdir}/usr/share/"
+  cp -r --no-preserve=mode,ownership "${srcdir}/squashfs-root/usr/share/icons" "${pkgdir}/usr/share/"
+}
