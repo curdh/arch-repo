@@ -97,7 +97,7 @@ jobs:
 
               [ "$LATEST_TAG" == "null" ] || [ -z "$LATEST_TAG" ] && continue
               
-              CLEAN_VER=$(echo "$LATEST_TAG" | grep -oP '\d+(\.\d+)+' | head -n 1)
+              CLEAN_VER=$(echo "$LATEST_TAG" | grep -oP '\d+(?:\.\d+)*' | head -n 1)
               CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
 
               echo " - CURRENT: $CURRENT_VER - UPDATED: $CLEAN_VER"
