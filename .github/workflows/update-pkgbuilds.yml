@@ -100,7 +100,7 @@ jobs:
               CLEAN_VER=$(echo "$LATEST_TAG" | grep -oP '\d+(\.\d+)+' | head -n 1)
               CURRENT_VER=$(grep -E "^pkgver=" "${PKG_DIR}PKGBUILD" | cut -d'=' -f2 | tr -d "'\"")
 
-              echo " - CURRENT: $CURRENT_VER - UPDATED: $CLEAR_VER"
+              echo " - CURRENT: $CURRENT_VER - UPDATED: $CLEAN_VER"
 
               # Si hay una actualización disponible
               if [ -n "$CLEAN_VER" ] && [ "$CLEAN_VER" != "$CURRENT_VER" ]; then
