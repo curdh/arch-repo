@@ -76,7 +76,7 @@ jobs:
                   LATEST_TAG=$(echo "$RELEASE_JSON" | jq -r .tag_name)
               elif [ "$PLATFORM" == "gitlab" ]; then
                   # Fix para whatsdesk
-                  if [ "$PKG_NAME" == "whatsdesk" ]; then
+                  if [ "$PKG_NAME" == "whatsdesk-bin" ]; then
                       # Whatsdesk no tiene release ni tags, asi que busca el archivo package.json para obtener la ultima version
                       LATEST_TAG=$(curl -s "https://gitlab.com/api/v4/projects/zerkc%2Fwhatsdesk/repository/files/package.json/raw?ref=master" | jq -r '.version')
                   else
