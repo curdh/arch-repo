@@ -1,6 +1,6 @@
 # Maintainer: e-tho <@e-tho:matrix.org>
 pkgname=pwmenu
-pkgver=0.3.0
+pkgver=0.4.0
 pkgrel=1
 pkgdesc="Launcher-driven audio manager for Linux"
 arch=('x86_64')
