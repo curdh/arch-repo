@@ -125,7 +125,7 @@ jobs:
                 chown -R builder:builder "$PKG_DIR"
                 
                 # Probar url para ver si existe el release.
-                SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $3}' | sed 's/^[^:]*= //' | sed 's/^[^:]*:://'")
+                SOURCE_URL=$(su builder -c "cd '$PKG_DIR' && makepkg --printsrcinfo | awk '/source =/ {print $3}' | sed 's/^[^:]*= //; s/^[^:]*:://; s/git+//'")
                 REL_NOT_FOUND=false
                 while IFS= read -r line; do
                   if [[ $line == *http* ]];
