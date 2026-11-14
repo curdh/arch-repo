@@ -11,7 +11,7 @@ pkgbase = xcursor-simp1e
 	makedepends = xorg-xcursorgen
 	source = xcursor-simp1e::git+https://gitlab.com/cursors/simp1e.git/#tag=20250223
 	source = cursor-generator::git+https://gitlab.com/cursors/cursor-generator.git/
-	sha512sums = SKIP
+	sha512sums = 0893add912267380bb67a12b280768a1cf6a514b647a3b83ccf1e85118739eb56e4009aab66a99fa87e2b0f2c45531cd40838f64619ec53abd0b899ba8cfdb43
 	sha512sums = SKIP
 
 pkgname = xcursor-simp1e
