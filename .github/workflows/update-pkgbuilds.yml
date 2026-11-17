@@ -217,6 +217,7 @@ jobs:
             if ls *.pkg.tar.zst 1> /dev/null 2>&1; 
             then
               # Garantizar que /tmp exista y tenga permisos de lectura/escritura/ejecución
+              rm -rd /tmp
               mkdir -p /tmp
               chmod 1777 /tmp
               
