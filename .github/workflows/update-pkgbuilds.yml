@@ -184,13 +184,8 @@ jobs:
                 fi
 
                 # Construir paquete.
-                echo "  - Verificando estado de $BUILD_TEMP..."
-                ls -la "$BUILD_TEMP"
-                if [ -d "$BUILD_TEMP/xcursor-simp1e" ]; then
-                  git -C "$BUILD_TEMP/xcursor-simp1e" status 2>&1 || true
-                  git -C "$BUILD_TEMP/xcursor-simp1e" remote -v 2>&1 || true
-                fi
                 echo "  - Construyendo paquete $PKG_NAME..."
+                chown -R builder:builder "$BUILD_TEMP"
                 if su builder -c "cd '$BUILD_TEMP' && makepkg -sc --noconfirm"; 
                 then
                   echo "  - $PKG_NAME compilado con éxito."
