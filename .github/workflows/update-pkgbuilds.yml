@@ -49,13 +49,13 @@ jobs:
           then
             REPO_DIR="${GITHUB_WORKSPACE}/build_output"
             mkdir -p "$REPO_DIR"
-            BUILD_TEMP="/tmp/${PKG_NAME}"
           fi
                 
           # Recorrer las subcarpetas dentro de /src/
           for PKG_DIR in ./src/*/; do
             if [ -f "${PKG_DIR}PKGBUILD" ]; then
               PKG_NAME=$(basename "$PKG_DIR")
+              BUILD_TEMP="/tmp/build-${PKG_NAME}"
               echo "Procesando $PKG_NAME..."
               
               # 1. Detectar si el PKGBUILD usa GitHub o GitLab y extraer el repositorio
