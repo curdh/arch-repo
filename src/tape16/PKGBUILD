@@ -1,5 +1,5 @@
 pkgname=tape16
-pkgver=0.9.560
+pkgver=0.9.570
 pkgrel=1
 pkgdesc='Destructive tape-style DAW (Appimage)'
 arch=(x86_64)
@@ -10,7 +10,7 @@ _release="TAPE-16-v${pkgver}-Linux-Release"
 depends=(fuse2 jack pipewire wireplumber xorg-xwayland zlib)
 provides=('tape16')
 source=("${_release}.zip::https://github.com/jackpaterson1/TAPE-16-Public-Releases/releases/download/${pkgver}/${_release}.zip")
-sha256sums=('d9cd022fa7bc0786214a30f09f789c5a053860fb3b2e3936d070c6704193b014')
+sha256sums=('e10cfc782bf2c8435b76c494724631be847c0e07cd73b03b3ada5cf71ba32bac')
 options=(!strip !debug)
 
 prepare() {

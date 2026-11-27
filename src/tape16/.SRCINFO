@@ -1,6 +1,6 @@
 pkgbase = tape16
 	pkgdesc = Destructive tape-style DAW (Appimage)
-	pkgver = 0.9.560
+	pkgver = 0.9.570
 	pkgrel = 1
 	url = https://emrmusicgroup.com/tape16
 	arch = x86_64
@@ -14,7 +14,7 @@ pkgbase = tape16
 	provides = tape16
 	options = !strip
 	options = !debug
-	source = TAPE-16-v0.9.560-Linux-Release.zip::https://github.com/jackpaterson1/TAPE-16-Public-Releases/releases/download/0.9.560/TAPE-16-v0.9.560-Linux-Release.zip
-	sha256sums = d9cd022fa7bc0786214a30f09f789c5a053860fb3b2e3936d070c6704193b014
+	source = TAPE-16-v0.9.570-Linux-Release.zip::https://github.com/jackpaterson1/TAPE-16-Public-Releases/releases/download/0.9.570/TAPE-16-v0.9.570-Linux-Release.zip
+	sha256sums = e10cfc782bf2c8435b76c494724631be847c0e07cd73b03b3ada5cf71ba32bac
 
 pkgname = tape16
